@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager, PermissionsMixin)
+from rest_framework_simplejwt.tokens import RefreshToken
 
 # Create your models here.
 
@@ -15,7 +16,7 @@ class UserManager(BaseUserManager):
         user.set_password(password)
         user.save()
 
-        raise user
+        return user
 
 
     def create_superuser(self, username, email, password):
@@ -53,6 +54,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.email
     
     def tokens(self) -> dict:
-        return {}
+        token =  RefreshToken.for_user(self)
+
+        return {
+            'refresh': str(token),
+            'access': str(token.access_token)
+        }
 
 

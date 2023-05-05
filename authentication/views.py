@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 import jwt
-from .serializers import RegisterSerializer, EmailVerificationSerializer
+from .serializers import RegisterSerializer, EmailVerificationSerializer, LoginSerializer
 from .models import User
 from .utils import Util
 from django.contrib.sites.shortcuts import get_current_site
@@ -13,6 +13,7 @@ import jwt
 from django.conf import settings
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from .renderers import UserRenderer
 # Create your views here.
 
 class RegisterView(generics.GenericAPIView):
@@ -29,6 +30,7 @@ class RegisterView(generics.GenericAPIView):
     email verification toke which is a jwt token containing the user id
     """
     serializer_class = RegisterSerializer
+    renderer_classes = (UserRenderer, )
 
     def post(self, request):
         user = request.data
@@ -82,5 +84,15 @@ class VerifyEmail(views.APIView):
             return Response({'success': False, 'message': 'Token expired'}, status=status.HTTP_400_BAD_REQUEST)
         except jwt.exceptions.DecodeError as identifier:
             return Response({'success': False, 'message': 'Invalid Token'}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+class LoginApiView(generics.GenericAPIView):
+    serializer_class = LoginSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
         
         
