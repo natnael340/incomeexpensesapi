@@ -39,5 +39,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('authentication.urls')),
     path('expenses/', include('expenses.urls')),
-    path('income/', include('income.urls'))
+    path('income/', include('income.urls')),
+    path('userstats/', include('userstats.urls'))
 ]
