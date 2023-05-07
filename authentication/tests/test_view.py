@@ -25,6 +25,10 @@ class TestViews(TestSetUp):
     def test_user_can_login_with_valid_verfied_email(self):
         response = self.client.post(self.register_url, self.user_data, format='json')
 
+        user = User.objects.get(email=response.data.get('email'))
+        user.is_verified = True
+        user.save()
+
         res = self.client.post(self.login_url, self.user_data, format='json')
 
-        self.assertEqual(res.status_code, 401)
+        self.assertEqual(res.status_code, 200)
