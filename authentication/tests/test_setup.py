@@ -13,7 +13,7 @@ class TestSetUp(APITestCase):
         self.user_data = {
             'email': self.fake.email(),
             'username': self.fake.email().split('@')[0],
-            'password': self.fake.email().split('@')[0],
+            'password': self.fake.password(10),
         }
 
 
